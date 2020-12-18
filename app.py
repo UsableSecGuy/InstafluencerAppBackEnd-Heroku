@@ -72,6 +72,9 @@ def create_app(test_config=None):
             print('{}'.format(search_term))
 
             # query Insta db for search_term and arrange by highest engagement
+            # goal query in sql to conver to sqlalchemy:
+            # select * from instafluencer where 'college radio'=ANY(hashtags)
+            # order by engagement desc;
             selection = Instafluencer.query.all()
 
             # filter(

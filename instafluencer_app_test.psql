@@ -115,6 +115,8 @@ ALTER TABLE ONLY public.saved_insta ALTER COLUMN id SET DEFAULT nextval('public.
 
 COPY public.instafluencer (id, username, full_name, profile_pic_link, profile_link, followers, posts_per_week, engagement, hashtags) FROM stdin;
 1	testUsername	Tom Hardy	www.test_link.com	www.test_profile_link	324	4.59999999999999964	45.3999999999999986	{"college radio"}
+2	moBetta	Denzel W.	www.profile_pic_link.com	www.denz_profile_link	534	2.39999999999999991	15	{"college radio",actor}
+3	flyGuy	Tyrone	www.model_portfolio.com	www.denz_profile_link.com	826	3	23	{"college radio",model}
 \.
 
 
@@ -130,7 +132,7 @@ COPY public.saved_insta (id, searcher_username, insta_fluencer_id, date_saved) F
 -- Name: instafluencer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pablo
 --
 
-SELECT pg_catalog.setval('public.instafluencer_id_seq', 1, true);
+SELECT pg_catalog.setval('public.instafluencer_id_seq', 3, true);
 
 
 --

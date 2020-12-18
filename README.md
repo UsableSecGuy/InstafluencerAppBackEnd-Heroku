@@ -95,7 +95,7 @@ To run the tests, run
 ```
 dropdb instafluencer_app_test
 createdb instafluencer_app_test
-psql instafluencer_app_test < instafluencer.psql
+psql instafluencer_app_test < instafluencer_app_test.psql
 ```
 
 ### Setup Auth0 For Local Testing
