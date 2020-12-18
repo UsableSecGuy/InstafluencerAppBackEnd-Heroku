@@ -1,0 +1,194 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.11
+-- Dumped by pg_dump version 12.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+--
+-- Name: instafluencer; Type: TABLE; Schema: public; Owner: pablo
+--
+
+CREATE TABLE public.instafluencer (
+    id integer NOT NULL,
+    username character varying NOT NULL,
+    full_name character varying NOT NULL,
+    profile_pic_link character varying NOT NULL,
+    profile_link character varying NOT NULL,
+    followers integer NOT NULL,
+    posts_per_week double precision NOT NULL,
+    engagement double precision NOT NULL,
+    hashtags character varying[] NOT NULL
+);
+
+
+ALTER TABLE public.instafluencer OWNER TO pablo;
+
+--
+-- Name: instafluencer_id_seq; Type: SEQUENCE; Schema: public; Owner: pablo
+--
+
+CREATE SEQUENCE public.instafluencer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.instafluencer_id_seq OWNER TO pablo;
+
+--
+-- Name: instafluencer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pablo
+--
+
+ALTER SEQUENCE public.instafluencer_id_seq OWNED BY public.instafluencer.id;
+
+
+--
+-- Name: saved_insta; Type: TABLE; Schema: public; Owner: pablo
+--
+
+CREATE TABLE public.saved_insta (
+    id integer NOT NULL,
+    searcher_username character varying NOT NULL,
+    insta_fluencer_id integer NOT NULL,
+    date_saved timestamp without time zone
+);
+
+
+ALTER TABLE public.saved_insta OWNER TO pablo;
+
+--
+-- Name: saved_insta_id_seq; Type: SEQUENCE; Schema: public; Owner: pablo
+--
+
+CREATE SEQUENCE public.saved_insta_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.saved_insta_id_seq OWNER TO pablo;
+
+--
+-- Name: saved_insta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pablo
+--
+
+ALTER SEQUENCE public.saved_insta_id_seq OWNED BY public.saved_insta.id;
+
+
+--
+-- Name: instafluencer id; Type: DEFAULT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.instafluencer ALTER COLUMN id SET DEFAULT nextval('public.instafluencer_id_seq'::regclass);
+
+
+--
+-- Name: saved_insta id; Type: DEFAULT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.saved_insta ALTER COLUMN id SET DEFAULT nextval('public.saved_insta_id_seq'::regclass);
+
+
+--
+-- Data for Name: instafluencer; Type: TABLE DATA; Schema: public; Owner: pablo
+--
+
+COPY public.instafluencer (id, username, full_name, profile_pic_link, profile_link, followers, posts_per_week, engagement, hashtags) FROM stdin;
+1	testUsername	Tom Hardy	www.test_link.com	www.test_profile_link	324	4.59999999999999964	45.3999999999999986	{"college radio"}
+\.
+
+
+--
+-- Data for Name: saved_insta; Type: TABLE DATA; Schema: public; Owner: pablo
+--
+
+COPY public.saved_insta (id, searcher_username, insta_fluencer_id, date_saved) FROM stdin;
+\.
+
+
+--
+-- Name: instafluencer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pablo
+--
+
+SELECT pg_catalog.setval('public.instafluencer_id_seq', 1, true);
+
+
+--
+-- Name: saved_insta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pablo
+--
+
+SELECT pg_catalog.setval('public.saved_insta_id_seq', 1, false);
+
+
+--
+-- Name: instafluencer instafluencer_pkey; Type: CONSTRAINT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.instafluencer
+    ADD CONSTRAINT instafluencer_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: instafluencer instafluencer_profile_link_key; Type: CONSTRAINT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.instafluencer
+    ADD CONSTRAINT instafluencer_profile_link_key UNIQUE (profile_link);
+
+
+--
+-- Name: instafluencer instafluencer_username_key; Type: CONSTRAINT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.instafluencer
+    ADD CONSTRAINT instafluencer_username_key UNIQUE (username);
+
+
+--
+-- Name: saved_insta saved_insta_pkey; Type: CONSTRAINT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.saved_insta
+    ADD CONSTRAINT saved_insta_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: saved_insta saved_insta_searcher_username_key; Type: CONSTRAINT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.saved_insta
+    ADD CONSTRAINT saved_insta_searcher_username_key UNIQUE (searcher_username);
+
+
+--
+-- Name: saved_insta saved_insta_insta_fluencer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: pablo
+--
+
+ALTER TABLE ONLY public.saved_insta
+    ADD CONSTRAINT saved_insta_insta_fluencer_id_fkey FOREIGN KEY (insta_fluencer_id) REFERENCES public.instafluencer(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
