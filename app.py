@@ -42,6 +42,18 @@ def create_app(test_config=None):
         # get request from the client
         body = request.get_json()
 
+        print(" search method before help function")
+        # print('{}'.format(search_term))
+
+        # query Insta db for search_term and arrange by highest engagement
+        # goal query in sql to conver to sqlalchemy:
+        # select * from instafluencer where 'college radio'=ANY(hashtags)
+        # order by engagement desc;
+        selection = Instafluencer.query.all()
+        print(" Selection: search method before help function")
+        print(selection)
+        print(" After Outside selction print")
+
         # get info from the body and if nothing there set it to None
         if "search_term" in body:
             search_term = body.get('search_term', None)

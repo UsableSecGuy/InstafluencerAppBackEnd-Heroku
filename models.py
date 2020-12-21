@@ -58,8 +58,8 @@ class Instafluencer(db.Model):
     hashtags = db.Column(ARRAY(db.String), nullable=False)
 
     # also needs relationship to show models
-    saved_instafluencers = db.relationship('Saved', backref='influencer',
-                                                            lazy=True)
+    saved_instafluencers = db.relationship('SavedInsta', backref='influencer',
+                                           lazy=True)
 
     def insert(self):
         db.session.add(self)
