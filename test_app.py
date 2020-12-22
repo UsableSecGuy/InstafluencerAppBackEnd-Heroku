@@ -44,7 +44,7 @@ class InstafluencerTestCase(unittest.TestCase):
             "profile_link": "https://www.instagram.com/anjee_smiles/",
             "followers": 3100,
             "posts_per_week": 0.5,
-            "enagement": 19.1,
+            "engagement": 19.1,
             "hashtags": ['college radio', 'radio host']
         }
 
@@ -65,20 +65,21 @@ class InstafluencerTestCase(unittest.TestCase):
     """
 
     """Scenario: Test Post Instafluencer No Account Fail"""
-    def test_c_post_instafluencer_by_no_account(self):
+    def test_a_post_instafluencer_by_no_account(self):
 
         res = self.client().post('/insta-fluencers',
                                  json=self.new_instafluencer,
                                  headers=[
                                      ('Content-Type', 'application/json')
                                  ])
-        data = res.json
+
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Post Instafluencer Standard Account Fail"""
-    def test_d_post_instafluencer_by_standard_account(self):
+    def test_b_post_instafluencer_by_standard_account(self):
 
         res = self.client().post('/insta-fluencers',
                                  json=self.new_instafluencer,
@@ -86,13 +87,14 @@ class InstafluencerTestCase(unittest.TestCase):
                                      ('Content-Type', 'application/json'),
                                      ('Authorization', 'Bearer '+self.standard)
                                  ])
-        data = res.json
+
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Post Instafluencer Premium Account Success"""
-    def test_e_post_instafluencer_by_premium_account(self):
+    def test_c_post_instafluencer_by_premium_account(self):
 
         res = self.client().post('/insta-fluencers',
                                  json=self.new_instafluencer,
@@ -100,36 +102,37 @@ class InstafluencerTestCase(unittest.TestCase):
                                      ('Content-Type', 'application/json'),
                                      ('Authorization', 'Bearer '+self.premium)
                                  ])
-        data = res.json
+
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Post SavedInsta No Account Fail"""
-    def test_c_post_savedInst_by_no_account(self):
+    def test_d_post_savedInst_by_no_account(self):
 
         res = self.client().post('/saved-insta-fluencers',
                                  json={
-                                        "searcher_username":
-                                        os.environ['STANDUSER'],
+                                        "searcher_username": "",
                                         "insta_fluencer_id": 1
                                     },
                                  headers=[
                                      ('Content-Type', 'application/json')
                                  ])
-        data = res.json
+
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['success'], False)
 
-    """Scenario: Test Post SavedInsta Standard Account Fail"""
-    def test_d_post_savedInsta_by_standard_account(self):
+    """Scenario: Test Post SavedInsta Standard Account Success"""
+    def test_e_post_savedInsta_by_standard_account(self):
 
         res = self.client().post('/saved-insta-fluencers',
                                  json={
                                         "searcher_username":
                                         os.environ['STANDUSER'],
-                                        "insta_fluencer_id": 1
+                                        "insta_fluencer_id": 2
                                     },
                                  headers=[
                                      ('Content-Type', 'application/json'),
@@ -138,17 +141,17 @@ class InstafluencerTestCase(unittest.TestCase):
                                  ])
         data = res.json
 
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['success'], False)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
 
     """Scenario: Test Post SavedInsta Premium Account Success"""
-    def test_e_post_savedInsta_by_premium_account(self):
+    def test_f_post_savedInsta_by_premium_account(self):
 
         res = self.client().post('/saved-insta-fluencers',
                                  json={
                                         "searcher_username":
                                         os.environ['PREMUSER'],
-                                        "insta_fluencer_id": 1
+                                        "insta_fluencer_id": 4
                                     },
                                  headers=[
                                      ('Content-Type', 'application/json'),
@@ -161,51 +164,53 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Get SavedInsta Premium Account Success"""
-    def test_e_get_savedInsta_by_premium_account(self):
+    def test_g_get_savedInsta_by_premium_account(self):
 
         res = self.client().get('/saved-insta-fluencers',
-                                headers={"Authorization":
-                                         'Bearer '+self.premium})
+                                headers=[("Authorization",
+                                         'Bearer ' + self.premium)])
         data = res.json
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
-    """Scenario: Test Get SavedInsta Standard Account Failed"""
-    def test_e_get_savedInsta_by_standard_account(self):
+    """Scenario: Test Get SavedInsta Standard Account Success"""
+    def test_h_get_savedInsta_by_standard_account(self):
 
         res = self.client().get('/saved-insta-fluencers',
-                                headers={"Authorization":
-                                         self.standard})
+                                headers=[("Authorization",
+                                         'Bearer ' + self.standard)])
         data = res.json
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Get SavedInsta No Account Failed"""
-    def test_e_get_savedInsta_by_no_account(self):
+    def test_i_get_savedInsta_by_no_account(self):
 
         res = self.client().get('/saved-insta-fluencers')
         data = res.json
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
 
     """Scenario: Test Search Instafluencers - Success """
-    def test_a_search_instafluencers_by_anyone(self):
+    def test_j_search_instafluencers_by_anyone(self):
 
         res = self.client().post('/insta-fluencers/search',
                                  json={"search_term": "college radio"},
                                  headers=[
                                      ('Content-Type', 'application/json')
                                  ])
-        data = res.json
+
+        # returns a list with string keys
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Search Instafluencers - Fail """
-    def test_b_search_instafluencers_by_anyone(self):
+    def test_k_search_instafluencers_by_anyone(self):
 
         res = self.client().post('/insta-fluencers/search',
                                  json={"searchTerm": "college radio"},
@@ -218,21 +223,21 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Patch Instafluencer Premium Account Success"""
-    def test_f_patch_instafluencer_by_premium_account(self):
+    def test_l_patch_instafluencer_by_premium_account(self):
 
         res = self.client().patch('/insta-fluencers/1',
-                                  json={"engagement": 15},
+                                  json={"engagement": 18},
                                   headers=[
                                      ('Content-Type', 'application/json'),
                                      ('Authorization', 'Bearer '+self.premium)
                                      ])
-        data = res.json
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Patch Instafluencer Premium Account Fail"""
-    def test_g_patch_instafluencer_by_premium_account_not_found(self):
+    def test_m_patch_instafluencer_by_premium_account_not_found(self):
 
         res = self.client().patch('/insta-fluencers/1000',
                                   json={"engagement": 15},
@@ -246,7 +251,7 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Patch Instafluencer No Account Fail"""
-    def test_h_patch_instafluencer_by_no_account_unauthorized(self):
+    def test_n_patch_instafluencer_by_no_account_unauthorized(self):
 
         res = self.client().patch('/insta-fluencers/1',
                                   json={"engagement": 15},
@@ -259,7 +264,7 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Delete Instafluencer No Account Fail"""
-    def test_i_delete_instafluencer_by_no_account_unauthorized(self):
+    def test_o_delete_instafluencer_by_no_account_unauthorized(self):
 
         res = self.client().delete('/insta-fluencers/1',
                                    headers=[
@@ -271,7 +276,7 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Delete Instafluencer Premium Account Success"""
-    def test_j_delete_instafluencer_by_premium_account_success(self):
+    def test_p_delete_instafluencer_by_premium_account_success(self):
 
         res = self.client().delete('/insta-fluencers/1',
                                    headers=[
@@ -285,7 +290,7 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Delete Instafluencer Premium Account Fail: Not Found"""
-    def test_k_delete_instafluencer_by_premium_account_not_found(self):
+    def test_q_delete_instafluencer_by_premium_account_not_found(self):
 
         res = self.client().delete('/insta-fluencers/1000',
                                    headers=[
@@ -299,7 +304,7 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Delete SavedInsta No Account Fail"""
-    def test_l_delete_saved_by_no_account_unauthorized(self):
+    def test_r_delete_saved_by_no_account_unauthorized(self):
 
         res = self.client().delete('/saved-insta-fluencers/1',
                                    headers=[
@@ -311,9 +316,9 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Delete SavedInsta Premium Account Success"""
-    def test_m_delete_saved_by_premium_account_success(self):
+    def test_s_delete_saved_by_premium_account_success(self):
 
-        res = self.client().delete('/saved-insta-fluencers/1',
+        res = self.client().delete('/saved-insta-fluencers/4',
                                    headers=[
                                         ('Content-Type', 'application/json'),
                                         ('Authorization',
@@ -325,7 +330,7 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
     """Scenario: Test Delete Saved Premium Account Fail: Not Found"""
-    def test_n_delete_saved_by_premium_account_not_found(self):
+    def test_t_delete_saved_by_premium_account_not_found(self):
 
         res = self.client().delete('/saved-insta-fluencers/1000',
                                    headers=[
@@ -339,17 +344,15 @@ class InstafluencerTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     """Scenario: Test Delete SavedInsta Standard Account Success"""
-    def test_o_delete_saved_by_standard_account_success(self):
+    def test_u_delete_saved_by_standard_account_success(self):
 
-        res = self.client().delete('/saved-insta-fluencers/1',
+        res = self.client().delete('/saved-insta-fluencers/2',
                                    headers=[
                                         ('Content-Type', 'application/json'),
                                         ('Authorization',
                                          'Bearer '+self.standard)
                                         ])
         data = res.json
-
-        print(self.standard)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)

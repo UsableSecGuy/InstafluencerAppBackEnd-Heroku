@@ -57,8 +57,11 @@ class Instafluencer(db.Model):
     engagement = db.Column(db.Float, nullable=False)
     hashtags = db.Column(ARRAY(db.String), nullable=False)
 
-    # also needs relationship to show models
-    saved_instafluencers = db.relationship('SavedInsta', backref='influencer',
+    ''' also needs relationship to show models
+    must include cascade="all,delete" or sqlalchemy won't delete
+    instafluencer object if it has children in the SavedInsta table'''
+    saved_instafluencers = db.relationship('SavedInsta', cascade="all,delete",
+                                           backref='influencer',
                                            lazy=True)
 
     def insert(self):
@@ -83,7 +86,7 @@ class SavedInsta(db.Model):
     __tablename__ = 'saved_insta'
 
     id = Column(db.Integer, primary_key=True)
-    searcher_username = Column(db.String, unique=True, nullable=False)
+    searcher_username = Column(db.String, nullable=False)
     insta_fluencer_id = db.Column(db.Integer,
                                   db.ForeignKey('instafluencer.id'),
                                   nullable=False)

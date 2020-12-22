@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 # need to move this to setup file
 AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
-ALGORITHMS = [os.environ.get('ALGORITHMS')]
+ALGORITHMS = os.environ.get('ALGORITHMS')
 API_AUDIENCE = os.environ.get('API_AUDIENCE')
 
 # AuthError Exception
@@ -46,6 +46,7 @@ def get_token_auth_header():
         }, 401)
 
     parts = auth.split(' ')
+
     if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
@@ -131,7 +132,6 @@ def verify_decode_jwt(token):
 
     if rsa_key:
         try:
-            print("RSA_KEY JWT =========")
             payload = jwt.decode(
                 token,
                 rsa_key,

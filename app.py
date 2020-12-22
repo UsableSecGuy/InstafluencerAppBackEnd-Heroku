@@ -30,7 +30,7 @@ def create_app(test_config=None):
         returns status code 200 and json
         {
             'success': True,
-            'fluencers': selection,
+            'insta_fluencers': selection,
             'total_fluencers': len(selection),
             'search_term': search_term
         }
@@ -42,30 +42,16 @@ def create_app(test_config=None):
         # get request from the client
         body = request.get_json()
 
-        print(" search method before help function")
-        # print('{}'.format(search_term))
-
-        # query Insta db for search_term and arrange by highest engagement
-        # goal query in sql to conver to sqlalchemy:
-        # select * from instafluencer where 'college radio'=ANY(hashtags)
-        # order by engagement desc;
-        selection = Instafluencer.query.all()
-        print(" Selection: search method before help function")
-        print(selection)
-        print(" After Outside selction print")
-
         # get info from the body and if nothing there set it to None
         if "search_term" in body:
             search_term = body.get('search_term', None)
         else:
             abort(400)
 
-        print("Print search term: ")
-        print(search_term)
-
         # pass to helper function
         if search_term:
             search_results = search_social(search_term)
+
         else:
             abort(400)
 
@@ -80,22 +66,16 @@ def create_app(test_config=None):
 
         try:
 
-            print("Search term result1 ")
-            print('{}'.format(search_term))
-
-            # query Insta db for search_term and arrange by highest engagement
+            ''' query Insta db for search_term and arrange by highest engagement
             # goal query in sql to conver to sqlalchemy:
             # select * from instafluencer where 'college radio'=ANY(hashtags)
-            # order by engagement desc;
-            selection = Instafluencer.query.all()
-
-            # filter(
-            #    Instafluencer.hashtags.any('{}'.format(search_term))).all()
-            # . order_by(Instafluencer.engagement.desc()))
-            # ilike('%{}%'.format(search_term))). \
-
-            print("Search term 2")
-            print(selection)
+            # order by engagement desc; '''
+            selection = Instafluencer.query.filter(Instafluencer.hashtags.
+                                                   any('{}'.format(search_term)
+                                                       )
+                                                   ).order_by(Instafluencer.
+                                                              engagement.desc()
+                                                              ).all()
 
             '''
                 {} are placeholders for python format() in strings.
@@ -107,12 +87,40 @@ def create_app(test_config=None):
 
             if(len(selection) != 0):
 
+                formatted_selection = []
+
+                for select in selection:
+
+                    formatted_selection.append(
+                        {
+                            "id": select.id,
+                            "username": select.username,
+                            "full_name": select.full_name,
+                            "profile_pic_link": select.profile_pic_link,
+                            "profile_link": select.profile_link,
+                            "followers": select.followers,
+                            "posts_per_week": select.posts_per_week,
+                            "engagement": select.engagement,
+                            "hashtags": select.hashtags
+
+                        }
+                    )
+
                 return jsonify({
                     'success': True,
-                    'fluencers': selection,
-                    'total_fluencers': len(selection),
-                    'search_term': search_term
+                    'search_term': search_term,
+                    'total_insta_fluencers': len(formatted_selection),
+                    'insta_fluencers': formatted_selection
                 })
+
+                '''
+                {
+                    'success': True,
+                    'insta_fluencers': selection,
+                    'total_insta_fluencers': len(selection),
+                    'search_term': search_term
+                }
+                '''
 
             else:
 
@@ -185,8 +193,12 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
-                "instafluencer": instafluencer
+                "insta_fluencer_id": instafluencer.id
             })
+            '''
+            cannot return query result alone; it has to be an attr or custom
+            formatted json response. Otherwise code will throw an error.
+            '''
 
         except BaseException:
             abort(404)
@@ -204,24 +216,26 @@ def create_app(test_config=None):
     @requires_auth('view:saved')
     def get_saved(jwt):
         try:
-
-            # check for here if get_saved messes up. make sure jwt is correct
-            string2 = jwt
-            # print("JWT: ")
-            # print(jwt)
-            decoded_base64 = base64.b64decode(str(string2).split(".")[1]+"==")
-            user_name = json.loads(decoded_base64.decode("UTF-8"))['sub']
-
-            # print("Username")
-            # print(user_name)
-
+            # use jwt['sub'] because the jwt that is passed is already decoded
             saved_list = SavedInsta.query. \
-                filter(SavedInsta.searcher_username == user_name). \
+                filter(SavedInsta.searcher_username == jwt['sub']). \
                 order_by('id').all()
+
+            formatted_saved = []
+
+            for save in saved_list:
+                formatted_saved.append(
+                    {
+                        "id": save.id,
+                        "insta_fluencer_id": save.insta_fluencer_id,
+                        "searcher_username": save.searcher_username
+                    }
+                )
 
             return jsonify({
                 'success': True,
-                'saved_list': saved_list
+                'saved_list': formatted_saved,
+                'total_saved': len(formatted_saved)
             })
 
         except BaseException:
@@ -239,7 +253,7 @@ def create_app(test_config=None):
 
     @app.route('/insta-fluencers', methods=['POST'])
     @requires_auth('add:influencer')
-    def post_instafluencer(jwt):
+    def post_instafluencer(jwt):  # add back jwt
         # get request from the client
         body = request.get_json()
 
@@ -251,11 +265,7 @@ def create_app(test_config=None):
         new_followers = body.get('followers', None)
         new_posts_per_week = body.get('posts_per_week', None)
         new_engagement = body.get('engagement', None)
-        new_hashtags = [body.get('hashtags', None)]
-
-        # validate that hashtags are already in a list
-        print("Print Hashtags")
-        print(new_hashtags)
+        new_hashtags = body.get('hashtags', None)
 
         try:
 
@@ -269,7 +279,6 @@ def create_app(test_config=None):
                 engagement=new_engagement,
                 hashtags=new_hashtags)
 
-            print("About to insert")
             instafluencer.insert()
 
             return jsonify({
@@ -306,12 +315,21 @@ def create_app(test_config=None):
                 searcher_username=new_username,
                 insta_fluencer_id=new_insta_fluencer_id)
 
-            saved_insta.insert()
+            results = SavedInsta.query.filter(SavedInsta.searcher_username ==
+                                              saved_insta.searcher_username,
+                                              SavedInsta.insta_fluencer_id ==
+                                              saved_insta.insta_fluencer_id
+                                              ).first()
 
-            return jsonify({
-                "success": True,
-                "id": saved_insta.id
-            })
+            if results:
+                abort(400)
+            else:
+                saved_insta.insert()
+
+                return jsonify({
+                    "success": True,
+                    "id": saved_insta.id
+                })
 
         except BaseException:
             abort(400)
@@ -331,8 +349,11 @@ def create_app(test_config=None):
     @requires_auth('unsave:influencer')
     def delete_saved(jwt, saved_id):
         try:
+
             savedInsta = SavedInsta.query. \
-                filter(SavedInsta.id == saved_id).one_or_none()
+                filter(SavedInsta.insta_fluencer_id == saved_id,
+                       SavedInsta.searcher_username == jwt['sub']
+                       ).one_or_none()
 
             if savedInsta is None:
                 abort(404)
@@ -364,8 +385,9 @@ def create_app(test_config=None):
     @requires_auth('delete:influencer')
     def delete_instafluencer(jwt, insta_id):
         try:
-            instafluencer = Instafluencer.query. \
-                filter(Instafluencer.id == insta_id).one_or_none()
+            instafluencer = Instafluencer.query.filter(Instafluencer.id
+                                                       == insta_id
+                                                       ).one_or_none()
 
             if instafluencer is None:
                 abort(404)
@@ -375,7 +397,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
-                "delete": insta_id
+                "deleted_id": insta_id
             })
 
         except BaseException:
@@ -415,6 +437,17 @@ def create_app(test_config=None):
             "error": 400,
             "message": 'bad request'
         }), 400
+
+    '''
+        Error handler for 401
+    '''
+    @app.errorhandler(401)
+    def no_authorized(error):
+        return jsonify({
+            "success": False,
+            "error": 401,
+            "message": 'not authorized'
+        }), 401
 
     '''
         Error handler for 500
