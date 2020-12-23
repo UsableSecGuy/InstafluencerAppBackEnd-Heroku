@@ -24,15 +24,16 @@ def create_app(test_config=None):
     # ROUTES
 
     '''
-        POST /insta-fluencers/search
+        1. POST /insta-fluencers/search
             it searches instafluencer table by hashtag
             it should not require any permission to use
         returns status code 200 and json
         {
             'success': True,
-            'insta_fluencers': selection,
-            'total_fluencers': len(selection),
-            'search_term': search_term
+            'insta_fluencers': [<instafluencer 1>,<instafluencer 2>,
+            <instafluencer 3>, <instafluencer 4>],
+            'total_insta_fluencers': 4,
+            'search_term': "college radio"
         }
     '''
 
@@ -113,15 +114,6 @@ def create_app(test_config=None):
                     'insta_fluencers': formatted_selection
                 })
 
-                '''
-                {
-                    'success': True,
-                    'insta_fluencers': selection,
-                    'total_insta_fluencers': len(selection),
-                    'search_term': search_term
-                }
-                '''
-
             else:
 
                 abort(404)
@@ -130,13 +122,13 @@ def create_app(test_config=None):
             abort(404)
 
     '''
-        PATCH /insta-fluencers/<insta_id>
+        2. PATCH /insta-fluencers/<insta_id>
             where <insta_id> is the existing insta_fluencer_id
             it should respond with a 404 error if <insta_id> is not found
             it should update the corresponding row for <insta_id>
             it should require the 'update:influencer' permission
         returns status code 200 and json
-        {"success": True, "instafluencer": instafluencer}
+        {"success": True, "insta_fluencer_id": 1}
     '''
 
     @app.route('/insta-fluencers/<int:insta_id>', methods=['PATCH'])
@@ -204,12 +196,15 @@ def create_app(test_config=None):
             abort(404)
 
     '''
-        GET /saved-insta-fluencers
+        3. GET /saved-insta-fluencers
             it should respond with a 404 error if <insta_id> is not found
             it should update the corresponding row for <insta_id>
             it should require the 'update:influencer' permission
         returns status code 200 and json
-        {"success": True, "instafluencer": instafluencer}
+        {"success": True,
+        "saved_list": [<SavedInsta 1>, <SavedInsta 2>],
+        "total_saved": 2
+        }
     '''
 
     @app.route('/saved-insta-fluencers')
@@ -242,7 +237,7 @@ def create_app(test_config=None):
             abort(404)
 
     '''
-        POST /insta-fluencers
+        4. POST /insta-fluencers
             it should create a new row in the instafluencer table
             it should require the 'add:influencer' permission
         returns status code 200 and json
@@ -290,7 +285,7 @@ def create_app(test_config=None):
             abort(400)
 
     '''
-        POST /saved-insta-fluencers
+        5. POST /saved-insta-fluencers
             it should create a new row in the savedInsta table
             it should require the 'save:influencer' permission
         returns status code 200 and json
@@ -335,7 +330,7 @@ def create_app(test_config=None):
             abort(400)
 
     '''
-        DELETE /saved-insta-fluencers/<saved_id>
+        6. DELETE /saved-insta-fluencers/<saved_id>
             where <saved_id> is the existing saved model id
             it should respond with a 404 error if <saved_id> is not found
             it should delete the corresponding row for <saved_id>
@@ -371,12 +366,13 @@ def create_app(test_config=None):
             abort(404)
 
     '''
-        DELETE /insta-fluencers/<insta_id>
+        7. DELETE /insta-fluencers/<insta_id>
             where <insta_id> is the existing instafluencer model id
             it should respond with a 404 error if <insta_id> is not found
             it should delete the corresponding row for <insta_id>
             it should require the 'delete:influencer' permission
-        returns status code 200 and json {"success": True, "delete": insta_id}
+        returns status code 200 and json
+        {"success": True,"deleted_id": insta_id}
         where insta_id is the id of the deleted record
             or appropriate status code indicating reason for failure
     '''

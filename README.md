@@ -55,7 +55,9 @@ This will install all of the required packages we selected within the `requireme
 The schema for the database and helper methods to simplify API behavior are in models.py:
 - There are two tables created: Instafluencer, SavedInsta
 - The Instafluencer table is used store specific information of instagram influencers.
+    - {username, full_name, profile_link, profile_pic_link, followers, posts_per_week, engagement, hashtags}
 - The SavedInsta table stores the end user's list of saved influencers.
+    - { searcher_username, insta_fluencer_id, date_saved}
 
 ## Running The Server (Locally)
 
@@ -91,7 +93,85 @@ The application is live on Heroku. Point your custom cURL or Postman requests [h
 
 ### View Sample Requests and Responses
 
-[API Documentation via Postman](https://documenter.getpostman.com/view/13069901/TVmJizAo)
+1. ##### POST /insta-fluencers/search
+    it searches instafluencer table by hashtag
+    it should not require any permission to use
+returns status code 200 and json
+```
+{
+    'success': True,
+    'insta_fluencers': [<instafluencer 1>,<instafluencer 2>,
+    <instafluencer 3>, <instafluencer 4>],
+    'total_insta_fluencers': 4,
+    'search_term': "college radio"
+}
+```
+
+2. ##### PATCH /insta-fluencers/\<insta_id>
+    where <insta_id> is the existing insta_fluencer_id
+    it should respond with a 404 error if <insta_id> is not found
+    it should update the corresponding row for <insta_id>
+    it should require the 'update:influencer' permission
+returns status code 200 and json
+```
+{"success": True, "insta_fluencer_id": 1}
+```
+
+3. ##### GET /saved-insta-fluencers
+    it should respond with a 404 error if <insta_id> is not found
+    it should update the corresponding row for <insta_id>
+    it should require the 'update:influencer' permission
+returns status code 200 and json
+```
+{"success": True,
+"saved_list": [<SavedInsta 1>, <SavedInsta 2>],
+"total_saved": 2
+}
+```
+
+4. ##### POST /insta-fluencers
+    it should create a new row in the instafluencer table
+    it should require the 'add:influencer' permission
+returns status code 200 and json
+```
+{"success": True, "id": instafluencer.id}
+```
+where instafluencer.id is the id of the newly added instafluencer
+    or appropriate status code indicating reason for failure
+
+5. ##### POST /saved-insta-fluencers
+    it should create a new row in the savedInsta table
+    it should require the 'save:influencer' permission
+returns status code 200 and json
+```
+{"success": True, "id": saved_insta.id}
+```
+where saved.id is the id of the newly added savedInsta entry
+    or appropriate status code indicating reason for failure
+
+6. ##### DELETE /saved-insta-fluencers/\<saved_id>
+    where <saved_id> is the existing saved model id
+    it should respond with a 404 error if <saved_id> is not found
+    it should delete the corresponding row for <saved_id>
+    it should require the 'unsave:influencer' permission
+returns status code 200 and json
+```
+{"success": True, "delete": saved_id}
+```
+where saved_id is the id of the deleted record
+    or appropriate status code indicating reason for failure
+
+7. ##### DELETE /insta-fluencers/\<insta_id>
+    where <insta_id> is the existing instafluencer model id
+    it should respond with a 404 error if <insta_id> is not found
+    it should delete the corresponding row for <insta_id>
+    it should require the 'delete:influencer' permission
+returns status code 200 and json
+```
+{"success": True,"deleted_id": insta_id}
+```
+where insta_id is the id of the deleted record
+    or appropriate status code indicating reason for failure
 
 ### Setup Database For Local Testing
 To run the tests, run
@@ -131,10 +211,11 @@ psql instafluencer_app_test < instafluencer_app_test.psql
         - can `search:influencers`
         - can `view:influencers`
 
-7. Test your endpoints with [Postman](https://getpostman.com).
+7. Test endpoints using curl or with [Postman](https://getpostman.com).
     - Register 2 users - assign the Standard role to one and Premium role to the other.
     - Sign into each account and make sure to capture the JWT.
-    - Import the postman collection `udacity-fsnd-capstone-instafluencer.postman_collection.json`
+    - ### [Postman tests need to updated; Please use cURL]
+    Do not use right now] Import the postman collection `udacity-fsnd-capstone-instafluencer.postman_collection.json`
     - Right-clicking the collection folder for Standard and Premium, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
     - Run the collection.
 
