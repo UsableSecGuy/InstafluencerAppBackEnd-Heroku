@@ -26,6 +26,12 @@ Follow instructions to install the latest version of python for your platform in
 
 We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/).
 
+If you have virtualenv installed, run:
+```bash
+python3 -m venv env
+source env/bin/activate
+```
+
 #### PIP Dependencies
 
 Once you have your virtual environment setup and running, install dependencies by running:
@@ -50,9 +56,6 @@ The schema for the database and helper methods to simplify API behavior are in m
 - There are two tables created: Instafluencer, SavedInsta
 - The Instafluencer table is used store specific information of instagram influencers.
 - The SavedInsta table stores the end user's list of saved influencers.
-
-
-
 
 ## Running The Server (Locally)
 
