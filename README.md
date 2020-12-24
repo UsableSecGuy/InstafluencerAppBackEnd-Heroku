@@ -123,9 +123,10 @@ returns status code 200 and json
     it should require the 'update:influencer' permission
 returns status code 200 and json
 ```
-{"success": True,
-"saved_list": [<SavedInsta 1>, <SavedInsta 2>],
-"total_saved": 2
+{
+    "success": True,
+    "saved_list": [<SavedInsta 1>, <SavedInsta 2>],
+    "total_saved": 2
 }
 ```
 
