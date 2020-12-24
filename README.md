@@ -157,7 +157,7 @@ where saved.id is the id of the newly added savedInsta entry
     it should require the 'unsave:influencer' permission
 returns status code 200 and json
 ```
-{"success": True, "delete": saved_id}
+{"success": True, "deleted_id": saved_id}
 ```
 where saved_id is the id of the deleted record
     or appropriate status code indicating reason for failure
@@ -215,8 +215,8 @@ psql instafluencer_app_test < instafluencer_app_test.psql
 7. Test endpoints using curl or with [Postman](https://getpostman.com).
     - Register 2 users - assign the Standard role to one and Premium role to the other.
     - Sign into each account and make sure to capture the JWT.
-    - ### [Postman tests need to updated; Please use cURL]
-    Do not use right now] Import the postman collection `udacity-fsnd-capstone-instafluencer.postman_collection.json`
+    - Import the postman collection 
+    `udacity-fsnd-capstone-instafluencer.postman_collection.json`
     - Right-clicking the collection folder for Standard and Premium, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
     - Run the collection.
 

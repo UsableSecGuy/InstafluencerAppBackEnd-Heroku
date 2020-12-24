@@ -36,7 +36,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"searcher_username\": {{premium_search_name}},\n    \"insta_fluencer_id\": 1\n}",
+							"raw": "{\n    \"searcher_username\": {{PREMUSER}},\n    \"insta_fluencer_id\": 4\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,10 @@
 							}
 						},
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
@@ -82,11 +85,15 @@
 							}
 						},
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
-						}
+						},
+						"description": "POST /saved-insta-fluencers it should create a new row in the savedInsta table it should require the 'save:influencer' permission returns status code 200 and json {\"success\": True, \"id\": saved_insta.id} where saved.id is the id of the newly added savedInsta entry or appropriate status code indicating reason for failure"
 					},
 					"response": []
 				},
@@ -105,10 +112,10 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.fluencer_list).to.be.an('array');",
-									"    pm.expect(jsonData.total_number).to.be.a('number');",
-									"    pm.expect(jsonData.start_page).to.be.a('number');",
-									"    pm.expect(jsonData.end_page).to.be.a('number');",
+									"    pm.expect(jsonData.insta_fluencers).to.be.an('array');",
+									"    pm.expect(jsonData.total_insta_fluencers).to.be.a('number');",
+									"    pm.expect(jsonData.search_term).to.be.a('string');",
+									"    pm.expect(jsonData.success).to.be.a('boolean');",
 									"    ",
 									"});",
 									""
@@ -159,6 +166,7 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
 									"    pm.expect(jsonData.id).to.be.a('number');",
+									"    pm.expect(jsonData.success).to.be.a('boolean');",
 									"    ",
 									"});"
 								],
@@ -171,7 +179,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"anjee_smiles\",\n    \"full_name\": \"Anjenée\",\n    \"profile_pic_link\": \"https://scontent-atl3-2.cdninstagram.com/v/t51.2885-19/s150x150/45466966_323990854861643_3648830650758201344_n.jpg?_nc_ht=scontent-atl3-2.cdninstagram.com&_nc_ohc=6uwDtqxJfVwAX-7yU_R&oh=cd1bfb665b6331a0e3c193750ca7b3ec&oe=5FCAE768\",\n    \"profile_link\":\"https://www.instagram.com/anjee_smiles/\",\n    \"followers\": 3100,\n    \"posts_per_week\": 0.5,\n    \"enagement\": 19.1,\n    \"hashtags\": [\"college radio\", \"radio host\"]   \n}",
+							"raw": "{\n    \"username\": \"anjee_smiles\",\n    \"full_name\": \"Anjenée\",\n    \"profile_pic_link\": \"https://scontent-atl3-2.cdninstagram.com/v/t51.2885-19/s150x150/45466966_323990854861643_3648830650758201344_n.jpg?_nc_ht=scontent-atl3-2.cdninstagram.com&_nc_ohc=6uwDtqxJfVwAX-7yU_R&oh=cd1bfb665b6331a0e3c193750ca7b3ec&oe=5FCAE768\",\n    \"profile_link\":\"https://www.instagram.com/anjee_smiles/\",\n    \"followers\": 3100,\n    \"posts_per_week\": 0.5,\n    \"engagement\": 19.1,\n    \"hashtags\": [\"college radio\", \"radio host\"]   \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -229,47 +237,6 @@
 							]
 						},
 						"description": "POST /insta-fluencers\n            it should create a new row in the instafluencer table\n            it should require the 'add:influencer' permission\n        returns status code 200 and json\n        {\"success\": True, \"id\": instafluencer.id}\n        where instafluencer.id is the id of the newly added instafluencer\n            or appropriate status code indicating reason for failure"
-					},
-					"response": []
-				},
-				{
-					"name": "/insta-fluencers  search",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "4abd9033-f09d-4c9e-b73b-6bc57a8492f9",
-								"exec": [
-									"pm.test(\"Status code is 405\", function () {",
-									"    pm.response.to.have.status(405);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "OPTIONS",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"search_term\": \"college radio\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/insta-fluencers",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"insta-fluencers"
-							]
-						},
-						"description": "OPT is not allowed and should return an error. "
 					},
 					"response": []
 				},
@@ -358,7 +325,7 @@
 					"response": []
 				},
 				{
-					"name": "/saved-insta-fluencers/1",
+					"name": "/saved-insta-fluencers/5",
 					"event": [
 						{
 							"listen": "test",
@@ -372,7 +339,8 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.id).to.be.a('number');",
+									"    pm.expect(jsonData.deleted_id).to.be.a('number');",
+									"    pm.expect(jsonData.success).to.be.a('boolean');",
 									"    ",
 									"});"
 								],
@@ -384,10 +352,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers/1",
+							"raw": "{{host}}/saved-insta-fluencers/5",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers",
-								"1"
+								"5"
 							]
 						},
 						"description": "DELETE /saved-insta-fluencers/<saved_id>\n            where <saved_id> is the existing saved model id\n            it should respond with a 404 error if <saved_id> is not found\n            it should delete the corresponding row for <saved_id>\n            it should require the 'unsave:influencer' permission\n        returns status code 200 and json {\"success\": True, \"delete\": saved_id}\n        where saved_id is the id of the deleted record\n            or appropriate status code indicating reason for failure"
@@ -402,8 +373,8 @@
 							"script": {
 								"id": "8bcf52cd-a5fe-4e5f-a0e5-35949a4c7f30",
 								"exec": [
-									"pm.test(\"Status code is 422; Unprocessable\", function () {",
-									"    pm.response.to.have.status(422);",
+									"pm.test(\"Status code is 404; Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -414,7 +385,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers/10000",
+							"raw": "{{host}}/saved-insta-fluencers/10000",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers",
 								"10000"
@@ -439,7 +413,8 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.saved_fluencers).to.be.an('array');",
+									"    pm.expect(jsonData.saved_list).to.be.an('array');",
+									"    pm.expect(jsonData.total_saved).to.be.an('number');",
 									"});"
 								],
 								"type": "text/javascript"
@@ -450,7 +425,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
@@ -460,7 +438,7 @@
 					"response": []
 				},
 				{
-					"name": "/insta-fluencers/1",
+					"name": "/insta-fluencers/8",
 					"event": [
 						{
 							"listen": "test",
@@ -474,7 +452,7 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.id).to.be.a('number');",
+									"    pm.expect(jsonData.deleted_id).to.be.a('number');",
 									"    ",
 									"});"
 								],
@@ -495,13 +473,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/insta-fluencers/1",
+							"raw": "{{host}}/insta-fluencers/9",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"insta-fluencers",
-								"1"
+								"9"
 							]
 						},
 						"description": "DELETE /insta-fluencers/<insta_id>\n            where <insta_id> is the existing instafluencer model id\n            it should respond with a 404 error if <insta_id> is not found\n            it should delete the corresponding row for <insta_id>\n            it should require the 'delete:influencer' permission\n        returns status code 200 and json {\"success\": True, \"delete\": insta_id}\n        where insta_id is the id of the deleted record\n            or appropriate status code indicating reason for failure"
@@ -516,8 +494,8 @@
 							"script": {
 								"id": "256703f8-a544-4c75-a4ce-a7b765e772b3",
 								"exec": [
-									"pm.test(\"Status code is 422; Unprocessable\", function () {",
-									"    pm.response.to.have.status(422);",
+									"pm.test(\"Status code is 404; Not Found\", function () {",
+									"    pm.response.to.have.status(404);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -555,13 +533,13 @@
 				"type": "bearer",
 				"bearer": [
 					{
-						"key": "password",
-						"value": "{{Premium Account}}",
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhkaEdaQU1va1ZPdXJWeXVkUUkyNSJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtZGVtby51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1OTY0MjU1Njk4MzAzOTcxNTIiLCJhdWQiOlsiaW5zdGFmbHVlbmNlciIsImh0dHBzOi8vZnNuZC1kZW1vLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MDg3NTU4MjMsImV4cCI6MTYwODg0MjIyMywiYXpwIjoiQ0NKa3Jjb0IwcnplNjczVFBFSVBFaHdEVXpvdDlSaGsiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiYWRkOmluZmx1ZW5jZXIiLCJkZWxldGU6aW5mbHVlbmNlciIsInNhdmU6aW5mbHVlbmNlciIsInVuc2F2ZTppbmZsdWVuY2VyIiwidXBkYXRlOmluZmx1ZW5jZXIiLCJ2aWV3OnNhdmVkIl19.hiGpw_x82euzYaTXywBez4CykOW4-HM7H6qlSzatDA-3lv-RDAN35HGV2CpzaXQ_wcFnWg5TtW-46tLkAvUoNcHU1m-e5QR9R9TdT8DuAqBpjcQfdx7muEUexmPMLbotdQKlXTP7AofYfZGJ886INthT2V5wS7pu4ATEiwEHh1ld70KGc3naPNlQpP0mf0kMAa_FCSKERmK-WiP73lXXlTTc-Rchz1R8wicYkjZQnUTGUSF0_KIs0AcZxP1Z3J6nvffnlj6dJOzNrmfdtZXtLvQ4zzpUYBH3YuB29m-hqc7X_FjWcS3iIhetY5DqkpIiWsTGUNl6okvI4w9gO1eVig",
 						"type": "string"
 					},
 					{
-						"key": "token",
-						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhkaEdaQU1va1ZPdXJWeXVkUUkyNSJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtZGVtby51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1OTY0MjU1Njk4MzAzOTcxNTIiLCJhdWQiOlsiaW5zdGFmbHVlbmNlciIsImh0dHBzOi8vZnNuZC1kZW1vLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MDY3MjA0ODYsImV4cCI6MTYwNjcyNzY4NiwiYXpwIjoiQ0NKa3Jjb0IwcnplNjczVFBFSVBFaHdEVXpvdDlSaGsiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiYWRkOmluZmx1ZW5jZXIiLCJkZWxldGU6aW5mbHVlbmNlciIsInNhdmU6aW5mbHVlbmNlciIsInVuc2F2ZTppbmZsdWVuY2VyIiwidXBkYXRlOmluZmx1ZW5jZXIiLCJ2aWV3OnNhdmVkIl19.RPkCDOIuLhbCcHl9VUzfS_sHDrDlwBnWINLgOt1vb9G4P2nX6XKDgJp9qrUsTZFBlKtVdb6V1Rz297A7H8Tpr36GN1gkjfqUdJ4D8nhaZYXKC_dZqtLsjoAAfpKgJBse134BDs3NocvgFd-wEAJN26Egwk5S9I5oeGGCOQptL61XAGY3qsg5HrFmaf2HR1wPosvC96xwpRnnMoV8orFpQgoNEuecbzFP9mL35aJT8XmIkL3SsARZfP6nX-XQFIHi0azNstT1F4upoUZWPm-11EClQW3hn2_-piAL0epT2BkIE0WW1i-2rCVF-Os3fBjjIYNHSpVuaWsgQHyGeNrROw",
+						"key": "password",
+						"value": "{{Premium Account}}",
 						"type": "string"
 					}
 				]
@@ -622,7 +600,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"searcher_username\": {{standard_searcher_name}},\n    \"insta_fluencer_id\": 1\n}",
+							"raw": "{\n    \"searcher_username\": {{STANDUSER}},\n    \"insta_fluencer_id\": 3\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -630,7 +608,10 @@
 							}
 						},
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
@@ -695,10 +676,10 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.fluencer_list).to.be.an('array');",
-									"    pm.expect(jsonData.total_number).to.be.a('number');",
-									"    pm.expect(jsonData.start_page).to.be.a('number');",
-									"    pm.expect(jsonData.end_page).to.be.a('number');",
+									"    pm.expect(jsonData.insta_fluencers).to.be.an('array');",
+									"    pm.expect(jsonData.total_insta_fluencers).to.be.a('number');",
+									"    pm.expect(jsonData.search_term).to.be.a('string');",
+									"    pm.expect(jsonData.success).to.be.a('boolean');",
 									"    ",
 									"});",
 									""
@@ -734,7 +715,7 @@
 					"response": []
 				},
 				{
-					"name": "/insta-fluencers/1",
+					"name": "/insta-fluencers/4",
 					"event": [
 						{
 							"listen": "test",
@@ -754,7 +735,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"engagement\": 15   \n}",
+							"raw": "{\n    \"engagement\": 18   \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -762,13 +743,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/insta-fluencers/1",
+							"raw": "{{host}}/insta-fluencers/4",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"insta-fluencers",
-								"1"
+								"4"
 							]
 						},
 						"description": "PATCH /insta-fluencers/<insta_id>\n            where <insta_id> is the existing insta_fluencer_id\n            it should respond with a 404 error if <insta_id> is not found\n            it should update the corresponding row for <insta_id>\n            it should require the 'update:influencer' permission\n        returns status code 200 and json\n        {\"success\": True, \"instafluencer\": instafluencer}\n       "
@@ -776,7 +757,7 @@
 					"response": []
 				},
 				{
-					"name": "/saved-insta-fluencers/1",
+					"name": "/saved-insta-fluencers/3",
 					"event": [
 						{
 							"listen": "test",
@@ -790,7 +771,8 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.id).to.be.a('number');",
+									"    pm.expect(jsonData.deleted_id).to.be.a('number');",
+									"    pm.expect(jsonData.success).to.be.a('boolean');",
 									"    ",
 									"});"
 								],
@@ -802,10 +784,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers/1",
+							"raw": "{{host}}/saved-insta-fluencers/3",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers",
-								"1"
+								"3"
 							]
 						},
 						"description": "DELETE /saved-insta-fluencers/<saved_id>\n            where <saved_id> is the existing saved model id\n            it should respond with a 404 error if <saved_id> is not found\n            it should delete the corresponding row for <saved_id>\n            it should require the 'unsave:influencer' permission\n        returns status code 200 and json {\"success\": True, \"delete\": saved_id}\n        where saved_id is the id of the deleted record\n            or appropriate status code indicating reason for failure"
@@ -827,7 +812,8 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.saved_fluencers).to.be.an('array');",
+									"    pm.expect(jsonData.saved_list).to.be.an('array');",
+									"    pm.expect(jsonData.total_saved).to.be.an('number');",
 									"});"
 								],
 								"type": "text/javascript"
@@ -838,7 +824,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
@@ -894,13 +883,13 @@
 				"type": "bearer",
 				"bearer": [
 					{
-						"key": "password",
-						"value": "{{Standard}}",
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhkaEdaQU1va1ZPdXJWeXVkUUkyNSJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtZGVtby51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTE1MTEzMDE0NDk1NjI1NDIxMDYiLCJhdWQiOlsiaW5zdGFmbHVlbmNlciIsImh0dHBzOi8vZnNuZC1kZW1vLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MDg3NTU5NDQsImV4cCI6MTYwODg0MjM0NCwiYXpwIjoiQ0NKa3Jjb0IwcnplNjczVFBFSVBFaHdEVXpvdDlSaGsiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsic2F2ZTppbmZsdWVuY2VyIiwidW5zYXZlOmluZmx1ZW5jZXIiLCJ1cGRhdGU6aW5mbHVlbmNlciIsInZpZXc6c2F2ZWQiXX0.O6FJHhtZPTNKSJI1MI-yb4z5Dw_6ABnR2pjBChw5B8S2EcY7mZnFl7DsPXUkQHHA5x06wokp8L-eHQGc0PMwZq0_4TUdCri8uEY8ZzPs7PFjKEqwMdZMp14P_eSxkQG6F7IyPY3Oh6GRMPT_DTv4LRmGPkjEb-x_ImETzUfoXRf1Tmn0sMJHf56C5dtO_UQ38i1tv470Rvhu5XceWMc-6cbH9DcF3fok7PN1ktq7Ghs2Yf1GuvXs7xqUM-l7uUl0Aqz4hRKu1tgHQGXbcJ2nLTO6US1Z5uqP_e2122wni5vH7-GfZMI6HiBtqAn0tNefVjdvGspTTyxzbyvCzv9CEw",
 						"type": "string"
 					},
 					{
-						"key": "token",
-						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhkaEdaQU1va1ZPdXJWeXVkUUkyNSJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtZGVtby51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTE1MTEzMDE0NDk1NjI1NDIxMDYiLCJhdWQiOlsiaW5zdGFmbHVlbmNlciIsImh0dHBzOi8vZnNuZC1kZW1vLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MDY3MjA2ODAsImV4cCI6MTYwNjcyNzg4MCwiYXpwIjoiQ0NKa3Jjb0IwcnplNjczVFBFSVBFaHdEVXpvdDlSaGsiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsic2F2ZTppbmZsdWVuY2VyIiwidW5zYXZlOmluZmx1ZW5jZXIiLCJ1cGRhdGU6aW5mbHVlbmNlciIsInZpZXc6c2F2ZWQiXX0.d-fem3A7WQ68VtZ6urOnjQSfXwYV37gRbKUimzIdLlk6sIDaIqHMsfFcX-cUeULTbyiuaT5ah35lKrNLNlXkUlqgBROWOB6MTutoyZWwnHfOJkeLHyN7Y-SVJlo6c6s6ZHlIgAC-JWKmS43gKpBAuS1TJh8Ej1P8BLjQWMz7ztB3AugsyZ7QxLyUGdLrdewJsz3UoYLiZAcefirvcsspDC6rO6lmCiwmmxB9BcHqNFzkiFlyhtSM34VHh5Xo4Wkcm94DhrPdNvHs0FLE9oZf3MJzwzxWp9Ad-O2jUozBS8bG7xslPWnohdgEc6c6a1R28H6CCrYjSqYuyCNlbdSVJA",
+						"key": "password",
+						"value": "{{Standard}}",
 						"type": "string"
 					}
 				]
@@ -1002,7 +991,10 @@
 							}
 						},
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
@@ -1026,13 +1018,12 @@
 									"pm.test(\"Test Response Data Type\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.be.an(\"object\");",
-									"    pm.expect(jsonData.fluencer_list).to.be.an('array');",
-									"    pm.expect(jsonData.total_number).to.be.a('number');",
-									"    pm.expect(jsonData.start_page).to.be.a('number');",
-									"    pm.expect(jsonData.end_page).to.be.a('number');",
+									"    pm.expect(jsonData.insta_fluencers).to.be.an('array');",
+									"    pm.expect(jsonData.total_insta_fluencers).to.be.a('number');",
+									"    pm.expect(jsonData.search_term).to.be.a('string');",
+									"    pm.expect(jsonData.success).to.be.a('boolean');",
 									"    ",
-									"});",
-									""
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -1059,7 +1050,8 @@
 								"insta-fluencers",
 								"search"
 							]
-						}
+						},
+						"description": "POST /insta-fluencers/search it searches instafluencer table by hashtag it should not require any permission to use returns status code 200 and json { 'success': True, 'fluencers': selection, 'total_fluencers': len(selection), 'search_term': search_term }"
 					},
 					"response": []
 				},
@@ -1167,7 +1159,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers/1",
+							"raw": "{{host}}/saved-insta-fluencers/1",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers",
 								"1"
@@ -1197,7 +1192,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "/saved-insta-fluencers",
+							"raw": "{{host}}/saved-insta-fluencers",
+							"host": [
+								"{{host}}"
+							],
 							"path": [
 								"saved-insta-fluencers"
 							]
@@ -1234,29 +1232,44 @@
 	],
 	"variable": [
 		{
-			"id": "919e1726-21ea-4043-9e72-549748c51dd1",
+			"id": "fcfc3e25-3b0e-4eff-8136-3e218b6a46bf",
 			"key": "host",
-			"value": "localhost:5000"
+			"value": "https://instafluencer.herokuapp.com/"
 		},
 		{
-			"id": "f9c65e90-2916-454e-9e32-ddbb98ca3e0d",
-			"key": "Premium Account",
+			"id": "ac09b84d-5519-4d5d-980b-592d993b0b14",
+			"key": "Premium",
 			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhkaEdaQU1va1ZPdXJWeXVkUUkyNSJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtZGVtby51cy5hdXRoMC5jb20vIiwic3Vi..."
 		},
 		{
-			"id": "91f66a69-6af8-445c-93d4-c2d2d7c11cff",
+			"id": "9d1a43f0-4d9c-4b1e-b9db-533fefc75fa3",
 			"key": "Standard",
 			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhkaEdaQU1va1ZPdXJWeXVkUUkyNSJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtZGVtby51cy5hdXRoMC5jb20vIiwic3Vi..."
 		},
 		{
-			"id": "9b81b425-56ad-46cd-8938-2d127ce1e832",
-			"key": "standard_searcher_name",
+			"id": "85663814-da28-4a93-b3d7-0a0dc0410ee6",
+			"key": "STANDUSER",
 			"value": "\"google-oauth2|111511301449562542106\""
 		},
 		{
-			"id": "e19cc627-9127-4f47-b7bb-f9e26b87e8e1",
-			"key": "premium_search_name",
+			"id": "24862729-2a92-438f-b092-9037e09390ea",
+			"key": "PREMUSER",
 			"value": "\"google-oauth2|114596425569830397152\""
+		},
+		{
+			"id": "90332d4f-a0e9-4a15-b830-c59489b9ed12",
+			"key": "API_AUDIENCE",
+			"value": "'instafluencer'"
+		},
+		{
+			"id": "a41b5e76-e87a-4ebc-864e-bbb509498391",
+			"key": "ALGORITHMS",
+			"value": "['RS256']"
+		},
+		{
+			"id": "3d846551-a58d-4bce-a3cc-921a6f3d6afd",
+			"key": "AUTH0_DOMAIN",
+			"value": "'fsnd-demo.us.auth0.com'"
 		}
 	],
 	"protocolProfileBehavior": {}

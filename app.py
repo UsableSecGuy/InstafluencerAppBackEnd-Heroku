@@ -335,7 +335,8 @@ def create_app(test_config=None):
             it should respond with a 404 error if <saved_id> is not found
             it should delete the corresponding row for <saved_id>
             it should require the 'unsave:influencer' permission
-        returns status code 200 and json {"success": True, "delete": saved_id}
+        returns status code 200 and json
+        {"success": True, "deleted_id": saved_id}
         where saved_id is the id of the deleted record
             or appropriate status code indicating reason for failure
     '''
@@ -358,7 +359,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
-                "delete": saved_id
+                "deleted_id": saved_id
             })
 
         except BaseException:
