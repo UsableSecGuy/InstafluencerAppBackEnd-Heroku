@@ -20,6 +20,7 @@ def create_app(test_config=None):
         !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
     '''
     # db_drop_and_create_all()
+    # minor change added here to test new github heroku connection
 
     # ROUTES
 
